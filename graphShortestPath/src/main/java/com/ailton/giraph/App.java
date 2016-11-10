@@ -8,6 +8,7 @@ import org.apache.giraph.job.GiraphJob;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapred.FileInputFormat;
 import org.apache.hadoop.mapred.FileOutputFormat;
+import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.util.ToolRunner;
 
 /**
@@ -18,12 +19,11 @@ public class App extends GiraphRunner{
 	
 	@Override
 	public int run(String[] argArray) throws Exception {
-		
+
 		if (argArray.length != 4) {
 			throw new IllegalArgumentException(
 					"run: Must have 4 arguments <input path> <output path> " + "<source vertex id> <# of workers>");
 		}
-		
 		
 		GiraphJob job = new GiraphJob(getConf(), getClass().getName());
 		
@@ -31,11 +31,10 @@ public class App extends GiraphRunner{
 		job.getConfiguration().setVertexInputFormatClass(TextTextTextTextInputFormat.class);
 		job.getConfiguration().setVertexOutputFormatClass(VertexOutputFormat.class);
 
-		/*
 		FileInputFormat.addInputPath(job, new Path(argArray[0]));
 		FileOutputFormat.setOutputPath(job, new Path(argArray[1]));
-		job.getConfiguration().setLong(321.46548748, Long.parseLong(argArray[2]));
-		*/
+		job.getConfiguration().setLong("321.46548748", Long.parseLong(argArray[2]));
+		
 		job.getConfiguration().setWorkerConfiguration(Integer.parseInt(argArray[3]), Integer.parseInt(argArray[3]), 100.0f);		
 		
 		
@@ -50,7 +49,5 @@ public class App extends GiraphRunner{
 	public static void main(String[] args) throws Exception {
 		System.exit(ToolRunner.run(new App(), args));
 	}	
-	
-	
-	
+
 }
