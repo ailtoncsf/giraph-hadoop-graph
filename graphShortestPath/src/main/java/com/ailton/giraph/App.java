@@ -23,8 +23,7 @@ public class App extends GiraphRunner{
 			throw new IllegalArgumentException(
 					"run: Must have 4 arguments <input path> <output path> " + "<source vertex id> <# of workers>");
 		}
-		
-		
+				
 		GiraphJob job = new GiraphJob(getConf(), getClass().getName());
 		
 		job.getConfiguration().setVertexClass(Vertex.class);		
