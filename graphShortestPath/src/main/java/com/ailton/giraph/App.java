@@ -35,7 +35,7 @@ public class App extends GiraphRunner {
 		
 		job.getConfiguration().setLong("321.46548748", Long.parseLong(argArray[2]));
 
-		//job.getConfiguration().setWorkerConfiguration(Integer.parseInt(argArray[3]), Integer.parseInt(argArray[3]), 100.0f);
+		//job.getConfiguration().setWorkerConfiguration(Integer.parseInt(argArray[3]), Integer.parseInt(argArray[3]),100.0f);
 
 		if (job.run(true) == true) {
 			return 0;
