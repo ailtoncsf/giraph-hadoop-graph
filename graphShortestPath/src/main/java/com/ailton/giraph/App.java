@@ -27,7 +27,7 @@ public class App extends GiraphRunner {
 		GiraphJob job = new GiraphJob(getConf(), getClass().getName());
 	
 		job.getConfiguration().setVertexClass(Vertex.class);
-		job.getConfiguration().setVertexInputFormatClass(TextTextTextTextInputFormat.class);
+		job.getConfiguration().setVertexInputFormatClass(DeltaVertexInputFormat.class);
 		job.getConfiguration().setVertexOutputFormatClass(VertexOutputFormat.class);
 
 		FileInputFormat.addInputPath(job.getInternalJob(), new Path(argArray[0]));
