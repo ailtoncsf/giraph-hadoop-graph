@@ -1,8 +1,10 @@
 package com.ailton.giraph;
 
 import org.apache.giraph.GiraphRunner;
+import org.apache.giraph.conf.BooleanConfOption;
 import org.apache.giraph.graph.Vertex;
 import org.apache.giraph.io.VertexOutputFormat;
+import org.apache.giraph.io.formats.IdWithValueTextOutputFormat;
 import org.apache.giraph.job.GiraphJob;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
@@ -27,15 +29,19 @@ public class App extends GiraphRunner {
 		GiraphJob job = new GiraphJob(getConf(), getClass().getName());
 	
 		job.getConfiguration().setVertexClass(Vertex.class);
-		job.getConfiguration().setVertexInputFormatClass(DeltaVertexInputFormat.class);
-		job.getConfiguration().setVertexOutputFormatClass(VertexOutputFormat.class);
+		job.getConfiguration().setVertexInputFormatClass(TextTextTextTextInputFormat.class);
+		job.getConfiguration().setVertexOutputFormatClass(IdWithValueTextOutputFormat.class);
 
 		FileInputFormat.addInputPath(job.getInternalJob(), new Path(argArray[0]));
 		FileOutputFormat.setOutputPath(job.getInternalJob(), new Path(argArray[1]));
 		
 		job.getConfiguration().setLong("321.46548748", Long.parseLong(argArray[2]));
 
+		//job.getConfiguration().SPLIT_MASTER_WORKER.set(getConf(), false);
 		//job.getConfiguration().setWorkerConfiguration(Integer.parseInt(argArray[3]), Integer.parseInt(argArray[3]),100.0f);
+		 job.getConfiguration().setBoolean("giraph.SplitMasterWorker", false);
+		 job.getConfiguration().setWorkerConfiguration(1,1,100.0f);
+
 
 		if (job.run(true) == true) {
 			return 0;

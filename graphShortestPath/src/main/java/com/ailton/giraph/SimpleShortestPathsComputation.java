@@ -18,16 +18,24 @@
 
 package com.ailton.giraph;
 
-import org.apache.giraph.graph.BasicComputation;
+import java.io.IOException;
+
 import org.apache.giraph.conf.LongConfOption;
 import org.apache.giraph.edge.Edge;
+import org.apache.giraph.graph.BasicComputation;
 import org.apache.giraph.graph.Vertex;
+import org.apache.giraph.io.VertexOutputFormat;
+import org.apache.giraph.job.GiraphJob;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.FloatWritable;
 import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.util.Tool;
+import org.apache.hadoop.util.ToolRunner;
 import org.apache.log4j.Logger;
-
-import java.io.IOException;
 
 /**
  * Demonstrates the basic Pregel shortest paths implementation.
@@ -35,7 +43,7 @@ import java.io.IOException;
 // @Algorithm(name = "Shortest paths", description = "Finds all shortest paths
 // from a selected vertex")
 public class SimpleShortestPathsComputation
-		extends BasicComputation<LongWritable, DoubleWritable, FloatWritable, DoubleWritable> {
+		extends BasicComputation<LongWritable, DoubleWritable, FloatWritable, DoubleWritable> implements Tool{
 	/** The shortest paths id */
 	public static final LongConfOption SOURCE_ID = new LongConfOption("SimpleShortestPathsVertex.sourceId", 1,
 			"The shortest paths id");
@@ -78,5 +86,48 @@ public class SimpleShortestPathsComputation
 			}
 		}
 		vertex.voteToHalt();
+	}
+
+	public int run(String[] argArray) throws Exception {
+		/*
+		 * if (argArray.length != 4) { throw new IllegalArgumentException(
+		 * "run: Must have 4 arguments <input path> <output path> " +
+		 * "<source vertex id> <# of workers>"); }
+		 */
+
+		GiraphJob job = new GiraphJob(getConf(), getClass().getName());
+		
+		job.getConfiguration().setVertexClass(Vertex.class);
+		job.getConfiguration().setVertexInputFormatClass(TextTextTextTextInputFormat.class);
+		job.getConfiguration().setVertexOutputFormatClass(VertexOutputFormat.class);
+
+		FileInputFormat.addInputPath(job.getInternalJob(), new Path(argArray[0]));
+		FileOutputFormat.setOutputPath(job.getInternalJob(), new Path(argArray[1]));
+		
+		job.getConfiguration().setLong("9999.9", 1);
+		job.getConfiguration().setBoolean("giraph.SplitMasterWorker", false);
+		job.getConfiguration().setWorkerConfiguration(1, 1, 100.0f);		
+					
+		if (job.run(true) == true) {
+			return 0;
+		} else {
+			return -1;
+		}
+		
+		
+	}
+
+	public static void main(String[] args) throws Exception {
+		System.exit(ToolRunner.run(new SimpleShortestPathsComputation(), args));
+	}	
+	/*
+	public static class RunnerJob  extends GiraphRunner{
+		
+	}*/
+
+	@Override
+	public void setConf(Configuration arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 }
