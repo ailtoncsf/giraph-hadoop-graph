@@ -43,7 +43,7 @@ import org.apache.log4j.Logger;
 // @Algorithm(name = "Shortest paths", description = "Finds all shortest paths
 // from a selected vertex")
 public class SimpleShortestPathsComputation
-		extends BasicComputation<LongWritable, DoubleWritable, FloatWritable, DoubleWritable> implements Tool{
+		extends BasicComputation<LongWritable, DoubleWritable, FloatWritable, DoubleWritable>{
 	/** The shortest paths id */
 	public static final LongConfOption SOURCE_ID = new LongConfOption("SimpleShortestPathsVertex.sourceId", 1,
 			"The shortest paths id");
@@ -86,48 +86,5 @@ public class SimpleShortestPathsComputation
 			}
 		}
 		vertex.voteToHalt();
-	}
-
-	public int run(String[] argArray) throws Exception {
-		/*
-		 * if (argArray.length != 4) { throw new IllegalArgumentException(
-		 * "run: Must have 4 arguments <input path> <output path> " +
-		 * "<source vertex id> <# of workers>"); }
-		 */
-
-		GiraphJob job = new GiraphJob(getConf(), getClass().getName());
-		
-		job.getConfiguration().setVertexClass(Vertex.class);
-		job.getConfiguration().setVertexInputFormatClass(TextTextTextTextInputFormat.class);
-		job.getConfiguration().setVertexOutputFormatClass(VertexOutputFormat.class);
-
-		FileInputFormat.addInputPath(job.getInternalJob(), new Path(argArray[0]));
-		FileOutputFormat.setOutputPath(job.getInternalJob(), new Path(argArray[1]));
-		
-		job.getConfiguration().setLong("9999.9", 1);
-		job.getConfiguration().setBoolean("giraph.SplitMasterWorker", false);
-		job.getConfiguration().setWorkerConfiguration(1, 1, 100.0f);		
-					
-		if (job.run(true) == true) {
-			return 0;
-		} else {
-			return -1;
-		}
-		
-		
-	}
-
-	public static void main(String[] args) throws Exception {
-		System.exit(ToolRunner.run(new SimpleShortestPathsComputation(), args));
-	}	
-	/*
-	public static class RunnerJob  extends GiraphRunner{
-		
-	}*/
-
-	@Override
-	public void setConf(Configuration arg0) {
-		// TODO Auto-generated method stub
-		
 	}
 }
