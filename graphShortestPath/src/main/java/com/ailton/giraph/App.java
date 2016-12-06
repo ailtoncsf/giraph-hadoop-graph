@@ -1,6 +1,7 @@
 package com.ailton.giraph;
 
 
+import org.apache.giraph.conf.GiraphConfiguration;
 import org.apache.giraph.graph.Vertex;
 import org.apache.giraph.io.formats.GiraphFileInputFormat;
 import org.apache.giraph.io.formats.JsonLongDoubleFloatDoubleVertexOutputFormat;
@@ -43,11 +44,39 @@ public class App implements Tool {
         int numberOfWorkers = Integer.parseInt(args[0]); 
         String inputLocation = args[1]; 
         String outputLocation = args[2]; 
- 
-		GiraphJob job = new GiraphJob(getConf(), getClass().getName());
-	    // This is the addition - it will make hadoop look for other classes in the same     jar that contains this class
-	    
-		//job.getInternalJob().setJarByClass(getClass());
+        System.err.println(System.getProperty("java.library.path"));        
+                   
+        GiraphConfiguration config = new GiraphConfiguration();			
+		config.set("fs.default.name","hdfs://hdnode01:9000");		
+		config.set("mapred.job.tracker","hdnode01:9001");
+		config.set("mapreduce.framework.name","yarn");	
+
+		config.set("fs.hdfs.impl", 
+	            org.apache.hadoop.hdfs.DistributedFileSystem.class.getName()
+				
+	        );
+		config.set("fs.file.impl",
+	            org.apache.hadoop.fs.LocalFileSystem.class.getName()
+	        );
+		
+		/*config.set("yarn.application.classpath ",
+				   "$HADOOP_CONF_DIR, "
+				   + "$HADOOP_COMMON_HOME/share/hadoop/common/*, "
+				   + "$HADOOP_COMMON_HOME/share/hadoop/common/lib/*, "
+				   + "$HADOOP_HDFS_HOME/share/hadoop/hdfs/*,    "
+				   + "$HADOOP_HDFS_HOME/share/hadoop/hdfs/lib/*, "
+				   + "$YARN_HOME/share/hadoop/mapreduce/*, "
+				   + "$YARN_HOME/share/hadoop/mapreduce/lib/*, "
+				   + "$YARN_HOME/share/hadoop/yarn/*,  "
+				   + "$YARN_HOME/share/hadoop/yarn/lib/*");		*/
+		GiraphJob job = new GiraphJob(config, getClass().getName());
+		        
+                                   
+        
+		//original
+		//GiraphJob job = new GiraphJob(getConf(), getClass().getName());
+	   
+	    job.getInternalJob().setJarByClass(getClass());
 	    
 		
 		job.getConfiguration().setMasterComputeClass(YourMasterCompute.class);
@@ -57,13 +86,9 @@ public class App implements Tool {
 				
 		GiraphFileInputFormat.addVertexInputPath(job.getConfiguration(), new Path(inputLocation)); 
 		FileOutputFormat.setOutputPath(job.getInternalJob(), new Path(outputLocation));
-		
-		//job.getConfiguration().setLong("321.46548748", Long.parseLong(argArray[2]));
 
-		//job.getConfiguration().SPLIT_MASTER_WORKER.set(getConf(), false);
-		//job.getConfiguration().setWorkerConfiguration(Integer.parseInt(argArray[3]), Integer.parseInt(argArray[3]),100.0f);
-		 job.getConfiguration().setBoolean("giraph.SplitMasterWorker", false);
-		 job.getConfiguration().setWorkerConfiguration(numberOfWorkers, numberOfWorkers, 100.0f);
+		job.getConfiguration().setBoolean("giraph.SplitMasterWorker", false);
+		job.getConfiguration().setWorkerConfiguration(numberOfWorkers, numberOfWorkers, 100.0f);
         
         /*
         GiraphJob job = new GiraphJob(getConf(), getClass().getName()); 

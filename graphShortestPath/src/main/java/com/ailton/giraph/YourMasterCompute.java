@@ -1,16 +1,9 @@
 package com.ailton.giraph;
 
-import java.io.IOException;
-
 import org.apache.giraph.aggregators.TextAppendAggregator;
 import org.apache.giraph.conf.LongConfOption;
 import org.apache.giraph.conf.StrConfOption;
-import org.apache.giraph.edge.Edge;
-import org.apache.giraph.graph.Vertex;
 import org.apache.giraph.master.DefaultMasterCompute;
-import org.apache.hadoop.io.DoubleWritable;
-import org.apache.hadoop.io.FloatWritable;
-import org.apache.hadoop.io.LongWritable;
 import org.apache.log4j.Logger;
 
 /*
